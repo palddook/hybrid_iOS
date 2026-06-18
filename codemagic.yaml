@@ -3,12 +3,19 @@ workflows:
     name: iOS App Store
     max_build_duration: 120
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.starcc.greenit
       xcode: latest
       cocoapods: default
     scripts:
+      - name: Initialize keychain
+        script: keychain initialize
+      - name: Fetch signing files from Apple
+        script: |
+          app-store-connect fetch-signing-files \
+            com.starcc.greenit \
+            --type IOS_APP_STORE \
+            --create
+      - name: Add certificates to keychain
+        script: keychain add-certificates
       - name: Set up code signing
         script: xcode-project use-profiles
       - name: Pod install
@@ -19,9 +26,11 @@ workflows:
           xcode-project build-ipa \
             --workspace "starcc.xcworkspace" \
             --scheme "starcc"
+      - name: Upload to TestFlight
+        script: |
+          app-store-connect publish \
+            --path $(find build/ios/ipa -name "*.ipa" | head -1) \
+            --testflight
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
-    # publishing: App Store Connect 배포는 API 키 연결 후 활성화
-    # Team Settings → Integrations → App Store Connect에서 키 등록 필요
