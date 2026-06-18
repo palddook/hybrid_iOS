@@ -10,13 +10,12 @@ workflows:
     scripts:
       - name: Initialize keychain
         script: keychain initialize
-      - name: Create Distribution certificate
-        script: app-store-connect certificates create --type IOS_DISTRIBUTION
       - name: Fetch signing files from Apple
         script: |
           app-store-connect fetch-signing-files \
             com.starcc.greenit \
             --type IOS_APP_STORE \
+            --certificate-key=@env:CERTIFICATE_PRIVATE_KEY \
             --create
       - name: Add certificates to keychain
         script: keychain add-certificates
