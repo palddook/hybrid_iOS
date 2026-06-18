@@ -23,8 +23,5 @@ workflows:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        submit_to_app_store: false
+    # publishing: App Store Connect 배포는 API 키 연결 후 활성화
+    # Team Settings → Integrations → App Store Connect에서 키 등록 필요
