@@ -3,6 +3,8 @@ workflows:
     name: iOS App Store
     max_build_duration: 120
     environment:
+      groups:
+        - ios-signing
       xcode: latest
       cocoapods: default
     scripts:
