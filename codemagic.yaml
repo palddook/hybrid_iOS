@@ -1,0 +1,30 @@
+workflows:
+  ios-app-store:
+    name: iOS App Store
+    max_build_duration: 120
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.starcc.greenit
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      - name: Pod install
+        script: |
+          find . -maxdepth 1 -name "Podfile" -execdir pod install \;
+      - name: Build IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "starcc.xcworkspace" \
+            --scheme "starcc"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
