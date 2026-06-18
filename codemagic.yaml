@@ -10,6 +10,8 @@ workflows:
     scripts:
       - name: Initialize keychain
         script: keychain initialize
+      - name: Create Distribution certificate
+        script: app-store-connect certificates create --type IOS_DISTRIBUTION
       - name: Fetch signing files from Apple
         script: |
           app-store-connect fetch-signing-files \
